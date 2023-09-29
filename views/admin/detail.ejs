@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <title>Compalints</title>
+  </head>
+  <body>
+    <div class="sidenav">
+      <div class="logo">
+        <a href="/"><img src="../../image/aawaj.png" /></a>
+      </div>
+      <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
+      <ul id="navItems">
+        <li>
+          <a href="/admin/dashboard" data-i18n="dashboard"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+        </li>
+        <li>
+          <a href="/admin/complaint" data-i18n="complaints"
+            ><i class="fa-solid fa-list-check"></i> Complaints</a
+          >
+        </li>
+        <li>
+          <a href="/admin/type" data-i18n="complaintType"
+            ><i class="fa-solid fa-plus"></i>Complaint Type</a
+          >
+        </li>
+        <li>
+          <a href="/admin/logout" data-i18n="logout"
+            ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/"
+            ><strong>Awaj</strong> - Transforming Grievances into Action</a
+          >
+
+          <div class="text-align nav-right" id="navbarTogglerDemo02">
+            <div>
+              <span
+                ><a href="#" class="user-badge"
+                  ><i class="fa-solid fa-user"></i></a
+              ></span>
+              <span class="user-name">Admin</span>
+            </div>
+            <div>
+              <select id="languageSelect" onchange="translatePageContent(this)">
+                <option value="en">EN</option>
+                <option value="ne">NP</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="dashboard">
+        <div class="container">
+          <div class="form-complaint">
+            <div class="detail-card row">
+              <div class="col-md-8">
+                <div class="card-body">
+                  <div class="detail-title">
+                    <strong> <%=payload.title %> </strong>
+                  </div>
+                  <div class="detail-body">
+                    <div class="flex-it details">
+                      <div class="info">
+                        <div class="date">
+                          <span><i class="fa-solid fa-calendar-days"></i></span>
+                          4 days ago
+                        </div>
+                        <div class="name date">
+                          <span
+                            ><a href="/profile/<%=payload.userId %>"
+                              ><i class="fa-solid fa-user"></i><%=payload.username %></a
+                          ></span>
+                          
+                        </div>
+                        <div class="date">
+                          <span
+                            ><i class="fa-solid fa-spinner"></i></span>
+                          <%=payload.status %>
+                        </div>
+                      </div>
+                      <div class="">
+                        <a class="btn btn-danger" href="/admin/delete/<%=payload._id %>">
+                          <i class="fa fa-trash"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <p><%=payload.description %></p>
+                    <% if(payload.images){%>
+                    <div class="row">
+                      <% payload.images.forEach(i=>{%>
+                      <div class="col-md-6 mx-auto">
+                        <div class="image">
+                          <img src="<%=i %>" />
+                        </div>
+                      </div>
+
+                      <% }) %>
+                    </div>
+                    <%}else{%> No Image <%}%>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    
+                    <div class="comment-thread mt-4">
+                      <h3 data-i18n="comments">Comment</h3>
+                      <form action="/admin/<%=payload._id %>/addcomment" method="post">
+                        <textarea name="comment" class="form-control"></textarea>
+                        <button type="submit"class="mt-3 btn btn-primary"> Submit</button>
+                      </form>
+                      <!-- Comment 1 start -->
+                      <% allComment.forEach(comment =>{%>
+                        <details open class="comment gapping" id="comment-1">
+                          <a href="#comment-1" class="comment-border-link">
+                            <span class="sr-only">Jump to comment-1</span>
+                          </a>
+                          <summary>
+                            <div class="comment-info">
+                              <a href="<% if(comment.userid?.fullname){ %>/profile/<%=comment.userid?._id %><%}else{%>#<%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
+                                <%=comment.userid?.fullname %>
+                              <%}else{%>
+                                Admin
+                              <%}%></a>
+                            </div>
+                          </summary>
+          
+                          <div class="comment-body">
+                            <p>
+                              <%=comment.message %>
+                            </p>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-toggle="reply-form"
+                              data-target="<%=comment._id %>"
+                            >
+                              Reply
+                            </button>
+          
+                            <!-- Reply form start -->
+                            <form
+                              method="POST"
+                              class="reply-form d-none"
+                              id="<%=comment._id %>"
+                              action="/admin/<%=payload._id %>/<%=comment._id %>/<%=userid  %>/replycomment"
+                            >
+                              <textarea
+                                placeholder="Reply to comment"
+                                rows="4"
+                                class="form-control"
+                                name="reply"
+                              ></textarea>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                              <button
+                                type="button"
+                                data-toggle="reply-form"
+                                data-target="<%=comment._id %>"
+                                class="btn btn-primary"
+                              >
+                                Cancel
+                              </button>
+                            </form>
+                            <!-- Reply form end -->
+                          </div>
+                        <% if(comment.reply){                      
+                          comment.reply.forEach(r=>{%>
+                            <div class="replies">
+                              <!-- Comment 2 start -->
+                              <details open class="comment" id="comment-2">
+                                <a href="#comment-2" class="comment-border-link">
+                                  <span class="sr-only">Jump to comment-2</span>
+                                </a>
+                                <summary>
+                                  <div class="comment-heading">
+                                    <div class="comment-info">
+                                      <a href="/profile/<%= r.userid %>" class="comment-author"><%= r.username %></a>
+                                    </div>
+                                  </div>
+                                </summary>
+            
+                                <div class="comment-body">
+                                  <p><%=r.message %></p>
+            
+                                  <!-- Reply form end -->
+                                </div>
+                              </details>
+                            </div>
+                            <%})%>
+                        <%}%>  
+                        </details>
+                      <%})%>
+                      <!-- Comment 1 end -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 ">
+                <div class="card-body detail-side">
+                  <div class="detail-title">
+                    <strong data-i18n="actionPanel"> Action Panel </strong>
+                  </div>
+                  <div class="detail-body">
+                    <form
+                      class="admin-detail"
+                      action="/admin/details/<%=payload._id %>"
+                      method="POST"
+                    >
+                      <div class="form-group">
+                        <div class="progress_popup w-100">
+                          <label data-i18n="title"><strong>Title</strong></label>
+                          <input
+                            type="text"
+                            name="title"
+                            class="form-control"
+                            value="<%=payload.title  %>"
+                          />
+                        </div>
+                        <div class="progress_popup w-100 my-2">
+                          <label data-i18n="description"><strong>Description</strong></label>
+                          <textarea class="form-control" name="description"><%= payload.description %></textarea>
+                        </div>
+                        <div class="progress_popup w-100 my-2">
+                          <label data-i18n="status"><strong>Status</strong></label>
+                          <select
+                            name="status"
+                            id="action"
+                            class="form-select form-margin complaint-page-select form-control w-100"
+                            required
+                            onchange="progresspopup()"
+                          >
+                            <option value="Queue"<% if(payload.status =="Queue" ){%>selected <%} %> data-i18n="queue">Queue</option>
+                            <option value="Progress"<% if(payload.status =="Progress" ){%>selected <%} %>data-i18n="progress"> Progress</option>
+                            <option value="Success"<% if(payload.status =="Success" ){%>selected <%} %> data-i18n="success">Success</option>
+                          </select>
+                        </div>
+
+                        <div class="progress_popup w-100" id="p_pup">
+                          <div class="flex-it">
+                            <input
+                              type="range"
+                              name="progressbar"
+                              class="win10-thumb w-100"
+                              min="0"
+                              max="100"
+                              value="<%=payload.statusbar %>"
+                              step="5"
+                              data-step-labels="[0, 25, 50, 75, 100]"
+                              id="p_pup_range"
+                              onchange="valueUpdate()"
+                            />
+                            <div class="rangeValue" id="rangeValue"><%=payload.statusbar %></div>
+                          </div>
+                          <label data-i18n="statusMessage"><strong> Messege</strong></label>
+                          
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="p_pup_desc"
+                            placeholder="Status Messege"
+                            name="progressmessege"
+                            
+                            required
+                          />
+                          <div class="timeline">
+                            <div class="outer">
+                              <% payload.statusmessege.forEach(messege=>{%>
+                                <div class="statuscard">
+                                  <h6 class="title"><%=messege%></p></h6>
+                                </div>
+                              <%}) %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group form-margin">
+                        <label class="input-title"
+                          ><strong data-i18n="areaOfComplaint"
+                            >Area Of Complaint</strong
+                          ></label
+                        >
+                        <select
+                            class="form-select form-margin"
+                            required
+                            name="area"
+                          >
+                        <% database.forEach(data=>{%>
+                          <option value="<%=data.type%>" <% if(payload.area == data.type ){%>selected <%} %>><%=data.type%></option>
+                        <%})%>
+                        </select>
+                      </div>
+                      
+                      <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">
+                          Submit
+                        </button>
+                        
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="card-body detail-side">
+                  <div class="detail-title">
+                    <strong data-i18n="actionPanel"> Images </strong>
+                  </div>
+                  <div class="detail-body">
+                    <div class="form-group form-margin">
+                      <div class="row">
+                        <%if (payload.images.length == 0){%>
+                          <div class="col-md-6">
+                              <p>No Images</p>
+                          </div>
+                        <%}else{%>
+                        <% payload.images.forEach(image=>{%>
+                          <div class="col-md-6">
+                            <div id="<%=image%>">
+                              <img class="previewImage" src="<%=image%>" alt="Preview Image" id="preview_<%=image%>">
+                              <button id="removeButton" class="btn btn-danger"><i class="fa fa-x" onclick="deleteImage('<%=image%>','<%=payload._id%>')"></i></button>
+                            </div>
+                          </div>
+                        <%})}%>
+                      </div>
+    
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <script>
+
+      function deleteImage(image, id){
+        var currentURI = window.location.href;
+        let newRoute = "/admin/imageDelete?image="+image+'&id='+id;
+        var updatedURI = currentURI.replace(window.location.pathname, newRoute);
+        window.location.href = updatedURI;
+        console.log(updatedURI)
+      }
+
+      function toggleNav() {
+        var sidenav = document.querySelector(".sidenav");
+        var mainContent = document.querySelector(".main-content");
+        var navItems = document.getElementById("navItems");
+        var toggleBtn = document.querySelector(".toggle-btn");
+
+        sidenav.classList.toggle("open");
+        mainContent.classList.toggle("open");
+
+        if (sidenav.classList.contains("open")) {
+          navItems.style.display = "none";
+          toggleBtn.innerHTML = "&#9776;";
+        } else {
+          navItems.style.display = "block";
+          toggleBtn.innerHTML = "CMS";
+        }
+      }
+    </script>
+    <script>
+      let action = document.getElementById("action");
+        let range = document.getElementById("p_pup_range");
+        console.log(action.value);
+        if (action.value == "Progress") {
+          let progress_ppup = document.getElementById("p_pup");
+          progress_ppup.style.display = "block";
+          let p_pupdesc = document.getElementById("p_pup_desc");
+          p_pupdesc.setAttribute("required", "Ypu must update progress field");
+        } else {
+          let progress_ppup = document.getElementById("p_pup");
+          progress_ppup.style.display = "none";
+          let p_pupdesc = document.getElementById("p_pup_desc");
+          p_pupdesc.removeAttribute("required");
+        }
+      function progresspopup() {
+        let action = document.getElementById("action");
+        let range = document.getElementById("p_pup_range");
+        console.log(action.value);
+        if (action.value == "Progress") {
+          let progress_ppup = document.getElementById("p_pup");
+          progress_ppup.style.display = "block";
+          let p_pupdesc = document.getElementById("p_pup_desc");
+          p_pupdesc.setAttribute("required", "Ypu must update progress field");
+        } else {
+          let progress_ppup = document.getElementById("p_pup");
+          progress_ppup.style.display = "none";
+          let p_pupdesc = document.getElementById("p_pup_desc");
+          p_pupdesc.removeAttribute("required");
+        }
+      }
+
+      function valueUpdate() {
+        let range = document.getElementById("p_pup_range");
+        let dataValue = document.getElementById("rangeValue");
+
+        dataValue.innerHTML = range.value;
+      }
+    </script>
+    <script>
+      document.addEventListener(
+        "click",
+        function (event) {
+          var target = event.target;
+          var replyForm;
+          if (target.matches("[data-toggle='reply-form']")) {
+            replyForm = document.getElementById(
+              target.getAttribute("data-target")
+            );
+            replyForm.classList.toggle("d-none");
+          }
+        },
+        false
+      );
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../../js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,547 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+body {
+  font-family: "Roboto";
+  text-transform: capitalize;
+}
+.logo {
+  margin: 20px 10px;
+}
+.logo img {
+  width: 100%;
+}
+.user-badge {
+  border: solid 1px black;
+  border-radius: 50%;
+  padding: 6px 10px;
+  background-color: rgb(1, 1, 66);
+}
+.user-badge i {
+  color: white;
+}
+.user-name {
+  margin-left: 10px;
+}
+.name a {
+  text-decoration: none;
+  color: #000;
+}
+.card {
+  position: relative;
+  color: white;
+}
+
+.card-icon {
+  position: absolute;
+  font-size: 60px;
+  top: 0px;
+  right: 15px;
+  opacity: 0.6;
+}
+.dashboard {
+  margin: 40px 0px;
+  border-radius: 15px;
+}
+.custom-card {
+  color: black;
+  border-radius: 20px;
+}
+.card-title {
+  margin: 0px 0px 25px 0px;
+}
+.form-area {
+  min-height: 530px;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+.form-area::-webkit-scrollbar {
+  display: none;
+}
+.form-complaint {
+  margin: 20px 0px;
+}
+.form-select {
+  text-transform: capitalize;
+}
+.form-margin {
+  margin: 0px 0px 10px 0px;
+}
+.input-title {
+  margin: 10px 0px;
+}
+.form-control {
+  border-radius: 0;
+}
+table {
+  width: 100%;
+  text-align: center;
+}
+tr {
+  border-bottom: solid 1px lightgray;
+}
+td {
+  padding: 15px 0px;
+}
+.badge {
+  color: rgb(2, 136, 36);
+}
+.badge-success {
+  color: rgb(2, 136, 36);
+  background-color: rgba(2, 136, 36, 0.4);
+}
+.badge-progress {
+  color: rgb(255, 149, 0);
+  background-color: rgba(255, 149, 0, 0.4);
+}
+.badge-queue {
+  color: #df0303;
+  background-color: rgba(223, 3, 3, 0.4);
+}
+
+.table-complaint-list {
+  text-decoration: none;
+  color: black;
+}
+#registered {
+  background-image: linear-gradient(to left, #ee7b5e, #f1957e);
+}
+#queue {
+  background-image: linear-gradient(to left, #c62f2f, #ca6868);
+}
+#progress {
+  background-image: linear-gradient(to left, #4556f5, #7a87f8);
+}
+#completed {
+  background-image: linear-gradient(to left, #1aa57c, #20c997);
+}
+.date i {
+  margin: 0px 5px 10px 0px;
+}
+.flex-it {
+  display: flex;
+  justify-content: space-between;
+}
+.complaint-page-select {
+  width: 12%;
+}
+.image img {
+  width: 100%;
+}
+.detail-card {
+  background-color: white;
+  border-radius: 20px;
+}
+.detail-title {
+  background-color: #1aa57c;
+  padding: 10px;
+  border-radius: 20px 20px 0px 0px;
+  color: white;
+  text-align: center;
+  font-size: 20px;
+}
+.detail-body {
+  padding: 20px;
+  border: 1px solid #0fb482;
+  border-radius: 0px 0px 20px 20px;
+}
+@keyframes growProgressBar {
+  0%,
+  33% {
+    --pgPercentage: 0;
+  }
+  100% {
+    --pgPercentage: var(--value);
+  }
+}
+
+@property --pgPercentage {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+div[role="progressbar"] {
+  --size: 12rem;
+  --fg: #1aa57c;
+  --bg: #def;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 3s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+      closest-side,
+      white 80%,
+      transparent 0 99.9%,
+      white 0
+    ),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+  height: 65px;
+  width: 65px;
+  font-size: 20px;
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage var(--value);
+  content: counter(percentage) "%";
+}
+.info {
+  font-weight: 600;
+  align-self: flex-end;
+}
+.info i {
+  margin-right: 20px;
+  color: #1aa57c;
+}
+.details {
+  margin: 0px 0px 10px 0px;
+}
+
+.mainContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../image/bg1.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+.form-control:focus {
+  color: #000;
+  background-color: #fff;
+  border: 2px solid #33c498;
+  outline: 0;
+  box-shadow: none;
+}
+
+.btn {
+  background: #33c498;
+  border: #33c498;
+}
+.btn:hover {
+  background: #33c498;
+  border: #33c498;
+}
+.btn-danger {
+  background-color: #df0303;
+}
+
+.btn-danger:hover {
+  background-color: #b00202;
+}
+
+#submitForm {
+  color: black;
+}
+
+#forget-password-id {
+  color: #000;
+}
+
+/* nav */
+
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #20c997;
+  overflow-x: hidden;
+  transition: 0.5s;
+  text-align: center;
+}
+
+.sidenav.open {
+  width: 70px;
+}
+.sidenav li {
+  background-color: #0fb482;
+  padding: 30px !important;
+  border-bottom: 1px solid #05845d;
+}
+.sidenav .toggle-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center !important;
+  background-color: #049d70;
+  border: none;
+  padding: 20px 0px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidenav.open .toggle-btn {
+  text-align: center;
+}
+
+.sidenav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0px 0px;
+  text-align: left;
+}
+
+.sidenav ul li {
+  padding: 20px 16px;
+}
+
+.sidenav ul li a {
+  text-decoration: none;
+  color: white;
+  display: block;
+}
+.sidenav ul li a i {
+  margin-right: 10px;
+}
+
+.main-content {
+  margin-left: 200px;
+  padding: 20px;
+  transition: 0.5s;
+}
+
+.main-content.open {
+  margin-left: 70px;
+}
+.login_user {
+  text-decoration: none;
+  color: black;
+}
+.comment-thread {
+  max-width: 100%;
+  margin: auto;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-radius: 20px;
+}
+.m-0 {
+  margin: 0;
+}
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Comment */
+
+.comment {
+  position: relative;
+  margin: 20px auto;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+}
+.comment-heading {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  font-size: 14px;
+}
+.comment-voting {
+  width: 20px;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.comment-voting button {
+  display: block;
+  width: 100%;
+  height: 50%;
+  padding: 0;
+  border: 0;
+  font-size: 10px;
+}
+.comment-info {
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 10px;
+}
+.comment-author {
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: bold;
+  text-decoration: none;
+}
+.comment-author:hover {
+  text-decoration: underline;
+}
+.replies {
+  margin-left: 20px;
+}
+
+/* Adjustments for the comment border links */
+
+.comment-border-link {
+  display: block;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 12px;
+  height: calc(100% - 90px);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  background-color: rgba(0, 0, 0, 0.1);
+  background-clip: padding-box;
+}
+.comment-border-link:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.comment-body {
+  padding: 0 20px;
+  padding-left: 28px;
+}
+.replies {
+  margin-left: 28px;
+}
+
+/* Adjustments for toggleable comments */
+
+details.comment summary {
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+}
+details.comment summary::-webkit-details-marker {
+  display: none;
+}
+details.comment:not([open]) .comment-heading {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.comment-heading::after {
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+  align-self: center;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Adjustment for Internet Explorer */
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* Resets cursor, and removes prompt text on Internet Explorer */
+  .comment-heading {
+    cursor: default;
+  }
+  details.comment[open] .comment-heading::after,
+  details.comment:not([open]) .comment-heading::after {
+    content: " ";
+  }
+}
+
+/* Styling the reply to comment form */
+
+.reply-form textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+.d-none {
+  display: none;
+}
+#p_pup {
+  display: none;
+}
+
+.rangeValue {
+  width: 30px;
+  text-align: end;
+}
+.timeline {
+  background: var(--primary-color);
+  margin: 20px auto;
+}
+
+/* Outer Layer with the timeline border */
+.outer {
+  border-left: 2px solid #333;
+}
+
+/* Card container */
+.statuscard {
+  position: relative;
+  text-align: left;
+  margin: 0 0 20px 20px;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 400px;
+  text-transform: capitalize;
+}
+
+/* Information about the timeline */
+
+/* Title of the card */
+.title {
+  position: relative;
+  color: #000;
+  text-align: left;
+}
+
+/* Timeline dot  */
+.statuscard::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 999px;
+  left: -31px;
+  border: 3px solid #0fb482;
+}
+.nav-right {
+  display: flex;
+  width: 25%;
+  justify-content: space-around;
+}
+#languageSelect {
+  background: none;
+  border: none;
+}
+.status-messages {
+  text-align: center;
+  color: #1aa57c;
+}
+table {
+  text-transform: capitalize;
+}
+.previewImage {
+  width: 100%;
+}
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.detail-side {
+  margin-bottom: 20px;
+}
+.profile .profile-header {
+  background: #eeeeee;
+  padding: 10px;
+  font-size: 26px;
+  display: block;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.gapping {
+  padding: 20px;
+}
