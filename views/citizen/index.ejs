@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Homepage</title>
+  </head>
+  <body>
+    <% if(userName){%>
+    <div class="sidenav">
+      <div class="logo">
+        <a href="/"><img src="../image/aawaj.png" /></a>
+      </div>
+      <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
+      <ul id="navItems">
+        <li>
+          <a href="/" data-i18n="dashboard"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+        </li>
+        <li>
+          <a href="/complaint" data-i18n="complaints"
+            ><i class="fa-solid fa-list-check"></i> Complaints</a
+          >
+        </li>
+        <li>
+          <a href="/logout" data-i18n="logout"
+            ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+    <%}%>
+    <div class="<% if(userName){%>main-content<%}%>">
+      <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/"
+            ><strong>Awaj</strong> - Transforming Grievances into Action</a
+          >
+
+          <% if(userName){%>
+
+          <div class="text-align nav-right" id="navbarTogglerDemo02">
+            <div>
+              <span
+                ><a href="/profile/<%=userid %>" class="user-badge"
+                  ><i class="fa-solid fa-user"></i></a
+              ></span>
+              <span class="user-name"><%=userName %></span>
+            </div>
+            <div>
+              <select id="languageSelect" onchange="translatePageContent(this)">
+                <option value="en">EN</option>
+                <option value="ne">NP</option>
+              </select>
+            </div>
+          </div>
+
+          <%}else{%>
+          <span><a href="/login %>" class="login_user">Login</a></span>
+          <%} %>
+        </div>
+      </nav>
+      <div class="dashboard">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="card" id="registered">
+                <div class="card-body">
+                  <h6 class="card-title" data-i18n="totalComplaint">
+                    Total complaint
+                  </h6>
+                  <h3><%=everyData %></h3>
+                  <div class="card-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card" id="queue">
+                <div class="card-body">
+                  <h6 class="card-title" data-i18n="complaintsQueue">
+                    Complaint in Queue
+                  </h6>
+                  <h3><%=queue %></h3>
+                  <div class="card-icon">
+                    <i class="fa-solid fa-lines-leaning"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card" id="progress">
+                <div class="card-body">
+                  <h6 class="card-title" data-i18n="complaintsProgress">
+                    Complaint in Progress
+                  </h6>
+                  <h3><%=progress %></h3>
+                  <div class="card-icon">
+                    <i class="fa-sharp fa-solid fa-spinner"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card" id="completed">
+                <div class="card-body">
+                  <h6 class="card-title" data-i18n="completed">
+                    Complaint Completed
+                  </h6>
+                  <h3><%=success %></h3>
+                  <div class="card-icon">
+                    <i class="fa-solid fa-check"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-complaint">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card custom-card">
+                  <div class="card-body">
+                    <h4 class="card-title" data-i18n="registerComplaint">
+                      Register complaint
+                    </h4>
+                    <div class="form-area">
+                      <form
+                        method="post"
+                        action="/"
+                        enctype="multipart/form-data"
+                        onsubmit="return validateForm()"
+                      >
+                        <div class="form-group form-margin">
+                          <label class="input-title"
+                            ><strong data-i18n="complaintTitle"
+                              >Complaint Title</strong
+                            ></label
+                          >
+                          <input
+                            type="text"
+                            placeholder="Complaint Title"
+                            class="form-control"
+                            id="title"
+                            name="title"
+                            required
+                          />
+                        </div>
+                        <div class="form-group form-margin">
+                          <label for="exampleInputPassword1" class="input-title"
+                            ><strong data-i18n="description"
+                              >Description</strong
+                            ></label
+                          >
+                          <textarea
+                            class="form-control"
+                            rows="5"
+                            placeholder="Complaint In Detail"
+                            name="description"
+                            id="description"
+                            required
+                          ></textarea>
+                        </div>
+                        <div class="form-group form-margin">
+                          <label for="exampleInputPassword1" class="input-title"
+                            ><strong data-i18n="complaintCategory"
+                              >Complaint Category</strong
+                            ></label
+                          >
+                          <select
+                            class="form-select form-margin"
+                            required
+                            name="category"
+                            id="category"
+                          >
+                            <option value="public" selected data-i18n="public">
+                              Public
+                            </option>
+                            <option value="private" data-i18n="private">
+                              Private
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="form-group form-margin">
+                          <label for="exampleInputPassword1" class="input-title"
+                            ><strong data-i18n="areaOfComplaint"
+                              >Area of Complain</strong
+                            ></label
+                          >
+                          <select
+                            class="form-select form-margin"
+                            required
+                            name="area"
+                            id="area"
+                          >
+                            <option value="" disabled selected>
+                              Choose an option
+                            </option>
+                            <% area.forEach(singleArea=>{ %>
+                            <option
+                              value="<%=singleArea.type%>"
+                              data-i18n="<%=singleArea.type%>"
+                            >
+                              <%=singleArea.type%>
+                            </option>
+                            <%})%>
+                          </select>
+                        </div>
+
+                        <div class="form-group form-margin">
+                          <label class="input-title"
+                            ><strong data-i18n="uploadImages"
+                              >Upload Images</strong
+                            ></label
+                          >
+                          <input
+                            type="file"
+                            class="form-control"
+                            name="photo"
+                            id="photo"
+                            multiple
+                          />
+                        </div>
+
+                        <div class="form-group mt-3 text-center">
+                          <button
+                            type="submit"
+                            class="btn btn-primary"
+                            data-i18n="submit"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card custom-card">
+                  <div class="card-body">
+                    <div class="flex-it">
+                      <h4 class="card-title" data-i18n="latestComplaints">
+                        Latest complaints
+                      </h4>
+                      <a
+                        href="./complaint"
+                        class="table-complaint-list"
+                        data-i18n="viewAll"
+                      >
+                        View all</a
+                      >
+                    </div>
+                    <div class="form-area">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th data-i18n="no">No</th>
+                            <th data-i18n="complaintTitle">complaint Title</th>
+                            <th data-i18n="status">Status</th>
+                            <th data-i18n="areaOfComplaint">
+                              Area of Complaint
+                            </th>
+                            <th data-i18n="date">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% let i=1; payload.forEach(complaint=>{ %>
+                          <tr>
+                            <td><%=i++ %></td>
+                            <td>
+                              <a
+                                href="/details/<%=complaint._id %>"
+                                class="table-complaint-list"
+                                ><%= complaint.title %></a
+                              >
+                            </td>
+                            <td>
+                              <span
+                                class="badge <% if(complaint.status == 'Queue'){ %> badge-queue <% }%> <%if(complaint.status == 'Progress'){%>badge-progress<%}else{%>badge-success <%}%>"
+                                ><% if(complaint.status == 'Queue'){ %> Queue <%
+                                }%> <%if(complaint.status ==
+                                'Progress'){%>Progress<%}%>
+                                <%if(complaint.status == 'Success'){%>Success
+                                <%}%></span
+                              >
+                            </td>
+                            <td><%=complaint.area %></td>
+                            <td><%=complaint.Date.substr(0,15) %></td>
+                          </tr>
+                          <%}) %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Function to validate the form
+      function validateForm() {
+        // Get the values of the form fields
+        var title = document.getElementById("title").value;
+        var description = document.getElementById("description").value;
+        var category = document.getElementById("category").value;
+        var photo = document.getElementById("photo").value;
+        var area = document.getElementById("area").value;
+
+        console.log(title);
+        // Validate the title field
+        if (title === "") {
+          alert("Please enter a complaint title.");
+          return false;
+        } else if (description === "") {
+          alert("Please enter a complaint description.");
+          return false;
+        } else if (category === "") {
+          alert("Please select a complaint category.");
+          return false;
+        } else if (area === "") {
+          alert("Please add area of problem.");
+          return false;
+        } else if (photo !== "") {
+          var allowedExtensions = /(\.jpg|\.jpeg|\.png|)$/i;
+          if (!allowedExtensions.exec(photo)) {
+            alert("Please upload an image file (jpg, jpeg, png, or gif).");
+            return false;
+          }
+          var fileSize = document.getElementById("photo").files[0].size; // Get the file size
+          var maxSize = 3 * 1024 * 1024; // Maximum file size in bytes (3MB)
+          if (fileSize > maxSize) {
+            alert("Please upload an image file smaller than 3MB.");
+            return false;
+          }
+        }
+
+        return true;
+      }
+    </script>
+    <script>
+      function toggleNav() {
+        var sidenav = document.querySelector(".sidenav");
+        var mainContent = document.querySelector(".main-content");
+        var navItems = document.getElementById("navItems");
+        var toggleBtn = document.querySelector(".toggle-btn");
+
+        sidenav.classList.toggle("open");
+        mainContent.classList.toggle("open");
+
+        if (sidenav.classList.contains("open")) {
+          navItems.style.display = "none";
+          toggleBtn.innerHTML = "&#9776;";
+        } else {
+          navItems.style.display = "block";
+          toggleBtn.innerHTML = "&#9776;";
+        }
+      }
+    </script>
+    <script>
+      console.log("Made By Swornim Bhattarai and Prajita Balami");
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../../js/script.js"></script>
+  </body>
+</html>
