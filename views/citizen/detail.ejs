@@ -21,22 +21,22 @@
     <% if(userName){%>
       <div class="sidenav">
         <div class="logo">
-          <a href="/"><img src="../image/aawaj.png" /></a>
+          <a href="/"><img src="../../image/aawaj.png" /></a>
         </div>
         <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
         <ul id="navItems">
           <li>
-            <a href="/" data-i18n="dashboard"
+            <a href="/cms" data-i18n="dashboard"
               ><i class="fa-solid fa-house"></i> Dashboard</a
             >
           </li>
           <li>
-            <a href="/complaint" data-i18n="complaints"
+            <a href="/cms/complaint" data-i18n="complaints"
               ><i class="fa-solid fa-list-check"></i> Complaints</a
             >
           </li>
           <li>
-            <a href="/logout" data-i18n="logout"
+            <a href="/cms/logout" data-i18n="logout"
               ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
             >
           </li>
@@ -54,7 +54,7 @@
           <div class="text-align nav-right" id="navbarTogglerDemo02">
             <div>
               <span
-                ><a href="/profile/<%=userid %>" class="user-badge"
+                ><a href="/cms/profile/<%=userid %>" class="user-badge"
                   ><i class="fa-solid fa-user"></i></a
               ></span>
               <span class="user-name"><%=userName %></span>
@@ -85,7 +85,7 @@
                       </div>
                       <div class="name">
                         <span><i class="fa-solid fa-user"></i></span>
-                        <a href="/profile/<%=payload.userId%>">
+                        <a href="/cms/profile/<%=payload.userId%>">
                           <%=payload.username %></a
                         >
                       </div>
@@ -159,7 +159,7 @@
                 <div class="comment-thread mt-4">
                   <h3>Comment</h3>
                   <% if((payload.userId==userid)||isAdmin){%>
-                    <form action="/<%=payload._id %>/addcomment" method="post">
+                    <form action="/cms/<%=payload._id %>/addcomment" method="post">
                       <textarea name="comment" class="form-control" required></textarea>
                       <button type="submit"class="mt-3 btn btn-primary"> Submit</button>
                     </form>
@@ -174,7 +174,7 @@
                       <summary>
                         <div class="comment-heading">
                           <div class="comment-info">
-                            <a href="<% if(comment.userid?.fullname){ %>/profile/<%=comment.userid?._id %><%}else{%>#<%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
+                            <a href="<% if(comment.userid?.fullname){ %>/cms/profile/<%=comment.userid?._id %><%}else{%>#<%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
                               <%=comment.userid?.fullname %>
                             <%}else{%>
                               Admin
@@ -203,7 +203,7 @@
                           class="reply-form d-none"
                           id="<%=comment._id %>"
                           
-                          action="/<%=payload._id %>/<%=comment._id %>/<%=userid  %>/replycomment"
+                          action="/cms/<%=payload._id %>/<%=comment._id %>/<%=userid  %>/replycomment"
                         >
                           <textarea
                             placeholder="Reply to comment"
@@ -236,7 +236,7 @@
                             <summary>
                               <div class="comment-heading">
                                 <div class="comment-info">
-                                  <a href="/profile/<%= r.userid %>" class="comment-author"><%= r.username %></a>
+                                  <a href="/cms/profile/<%= r.userid %>" class="comment-author"><%= r.username %></a>
                                 </div>
                               </div>
                             </summary>

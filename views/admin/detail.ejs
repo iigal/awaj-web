@@ -30,6 +30,11 @@
           >
         </li>
         <li>
+          <a href="/admin/applicationrequest" data-i18n="request"
+            ><i class="fa-solid fa-user-group"></i> Request</a
+          >
+        </li>
+        <li>
           <a href="/admin/complaint" data-i18n="complaints"
             ><i class="fa-solid fa-list-check"></i> Complaints</a
           >
@@ -84,11 +89,11 @@
                       <div class="info">
                         <div class="date">
                           <span><i class="fa-solid fa-calendar-days"></i></span>
-                          4 days ago
+                          <%=payload.Date.substr(0,15) %>
                         </div>
                         <div class="name date">
                           <span
-                            ><a href="/profile/<%=payload.userId %>"
+                            ><a href="/admin/profile/<%=payload.userId %>"
                               ><i class="fa-solid fa-user"></i><%=payload.username %></a
                           ></span>
                           
@@ -137,7 +142,7 @@
                           </a>
                           <summary>
                             <div class="comment-info">
-                              <a href="<% if(comment.userid?.fullname){ %>/profile/<%=comment.userid?._id %><%}else{%>#<%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
+                              <a href="<% if(comment.userid?.fullname){ %>/admin/profile/<%=comment.userid?._id %><%}else{%>/admin/profile/<%=comment.userid?._id%><%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
                                 <%=comment.userid?.fullname %>
                               <%}else{%>
                                 Admin
@@ -377,7 +382,7 @@
           toggleBtn.innerHTML = "&#9776;";
         } else {
           navItems.style.display = "block";
-          toggleBtn.innerHTML = "CMS";
+          toggleBtn.innerHTML = "&#9776;";
         }
       }
     </script>
