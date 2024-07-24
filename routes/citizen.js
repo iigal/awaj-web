@@ -9,6 +9,8 @@ const fileUpload = require("express-fileupload");
 const { default: mongoose, get } = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const JWT_SECRET = "hgfhd6ej4jhF3";
+const Otp = require("../models/otpModel");
+const otpGenerator = require("otp-generator");
 const nodemailer = require("nodemailer");
 const comment = require("../models/comment");
 const type = require("../models/type");
@@ -36,29 +38,29 @@ router.get("/complaint", jwtTokenAuth, async (req, res) => {
   let area = req.query.area;
   console.log(status + area);
   if (status == "" && area == "") {
-    var all = await Complaint.find({ category: "public" }).sort({
+    var all = await Complaint.find({ userId: req.cookies.userID }).sort({
       _id: -1,
     });
   } else if (status && area) {
     var all = await Complaint.find({
-      category: "public",
+      userId: req.cookies.userID,
       status: status,
       area: area,
     }).sort({
       _id: -1,
     });
   } else if (status && area == "") {
-    var all = await Complaint.find({ category: "public", status: status }).sort(
+    var all = await Complaint.find({  userId: req.cookies.userID , status: status }).sort(
       {
         _id: -1,
       }
     );
   } else if (area && status == "") {
-    var all = await Complaint.find({ category: "public", area: area }).sort({
+    var all = await Complaint.find({ userId: req.cookies.userID, area: area }).sort({
       _id: -1,
     });
   } else {
-    var all = await Complaint.find({ category: "public" }).sort({
+    var all = await Complaint.find({ userId: req.cookies.userID }).sort({
       _id: -1,
     });
   }
@@ -98,7 +100,7 @@ router.get("/details/:id", jwtTokenAuth, async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     let allTypes = await type.find();
-    let all = await Complaint.find({ category: "public" })
+    let all = await Complaint.find({ userId: req.cookies.userID })
       .sort({ _id: -1 })
       .limit(9);
     let everyData = await Complaint.find().count();
@@ -155,6 +157,10 @@ router.get("/signup", async (_, res) => {
   res.render("citizen/signup", { message: "" });
 });
 
+router.get("/verification", async (_, res) => {
+  res.render("citizen/verify", { messege: "" });
+});
+
 // Logout Get
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
@@ -195,7 +201,7 @@ router.get("/reset-password/:id/:token", async (req, res) => {
 
 router.post("/", jwtTokenAuth, async (req, res) => {
   try {
-    const { title, description, category, area } = req.body;
+    const { title, description, area } = req.body;
     const file =
       req.files && req.files.photo
         ? Array.isArray(req.files.photo)
@@ -210,10 +216,6 @@ router.post("/", jwtTokenAuth, async (req, res) => {
 
     if (!description) {
       return res.status(400).send("Description is required");
-    }
-
-    if (!category) {
-      return res.status(400).send("Category is required");
     }
 
     if (!file) {
@@ -232,7 +234,6 @@ router.post("/", jwtTokenAuth, async (req, res) => {
     const complain = new Complaint({
       title,
       description,
-      category,
       username: req.cookies.user,
       images: imageResult.length > 0 ? imageResult : [],
       userId: req.cookies.userID,
@@ -241,13 +242,54 @@ router.post("/", jwtTokenAuth, async (req, res) => {
 
     console.log(complain);
     await complain.save();
-    res.redirect("/");
+    res.redirect("/cms");
   } catch (error) {
     // Handle the exception
     console.error(error);
     res.status(500).send("An error occurred.");
   }
 });
+
+router.post("/verification", async(req, res)=>{
+  const otpHolder = await Otp.find({
+    number: req.session.signupForm.number,
+  });
+
+
+  if (otpHolder.length === 0){
+    res.render("citizen/signup",{message:"OTP Expired"})
+    }else{
+      const rightOtpFind = otpHolder[otpHolder.length - 1];
+  const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
+
+  console.log("Valid user test",validUser)
+
+  if (rightOtpFind.number === req.session.signupForm.number && validUser) {
+    console.log("Reached in")
+    console.log(req.session.signupForm.password)
+    bcrypt.hash(req.session.signupForm.password, 10, function (err, hash) {
+      let data = new user({
+        fullname:req.session.signupForm.fullname,
+        address:req.session.signupForm.address,
+        phonenumber: req.session.signupForm.number,
+        email:req.session.signupForm.email,
+        password: hash,
+        voterid:req.session.signupForm.voterid,
+        accountstatus:"pending"
+      });
+      data.save();
+    });
+    res.redirect("/cms/login");
+    
+    const OTPDelete = await Otp.deleteMany({
+      number: rightOtpFind.number,
+    });
+    
+  } else {
+    res.render("citizen/signup",{message:"Invalid OTP"});  
+  }
+    }
+})
 
 // Login Post
 router.post("/login", async (req, res) => {
@@ -268,21 +310,23 @@ router.post("/login", async (req, res) => {
           });
           res.redirect("/admin/dashboard");
         } else {
-          console.log(loginUser.email);
-          console.log(loginUser.email === "sachiwalayap@gmail.com");
-          let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
-            expiresIn: 36000,
-          }); // Env variable for key
-          res.cookie("token", token, {
-            httpOnly: true,
-          });
-          res.cookie("user", loginUser.fullname, {
-            httpOnly: true,
-          });
-          res.cookie("userID", loginUser._id, {
-            httpOnly: true,
-          });
-          res.redirect("/");
+          if(loginUser.accountstatus==="approved"){
+            let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
+              expiresIn: 36000,
+            }); // Env variable for key
+            res.cookie("token", token, {
+              httpOnly: true,
+            });
+            res.cookie("user", loginUser.fullname, {
+              httpOnly: true,
+            });
+            res.cookie("userID", loginUser._id, {
+              httpOnly: true,
+            });
+            res.redirect("/cms");
+          }else{
+            res.render("citizen/login", { messege:loginUser.accountstatus=="pending"?"Account is pending":"Account is rejected" });
+          }
         }
       } else {
         res.render("citizen/login", { messege: "Invalid Password" });
@@ -300,10 +344,10 @@ router.post("/login", async (req, res) => {
 // Signup Post
 
 router.post("/signup", async (req, res) => {
-  const { fullname, address, number, email, password } = req.body;
+  const { fullname, address, number, email, password, voterid } = req.body;
 
   // Validate input
-  if (!fullname || !address || !number || !email || !password) {
+  if (!fullname || !address || !number || !email || !password || !voterid) {
     return res.status(400).send("All fields are required");
   }
 
@@ -313,28 +357,52 @@ router.post("/signup", async (req, res) => {
 
   try {
     const existingUser = await user.findOne({ email });
-
     if (existingUser) {
       return res.render("citizen/signup", { message: "User already exists." });
-    }
-
-    bcrypt.hash(password, 10, function (err, hash) {
-      let data = new user({
-        fullname,
-        address,
-        phonenumber: number,
-        email,
-        password: hash,
+    }else{
+      const OTP = otpGenerator.generate(6, {
+        digits: true,
+        lowerCaseAlphabets: false,
+        upperCaseAlphabets: false,
+        specialChars: false,
       });
-      data.save();
-    });
+      console.log("Generated OTP", OTP);
+      const otp = new Otp({ number: req.body.number, otp: OTP });
+      const salt = await bcrypt.genSalt(10);
+      otp.otp = await bcrypt.hash(otp.otp, salt);
+      await otp.save();
 
-    res.redirect("/login");
+      req.session.signupForm = req.body;
+      try {
+        const url = "https://sms.aakashsms.com/sms/v3/send/";
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
+              to: req.body.number,
+              text: `${OTP} is your OTP Code for Awaj. Thank you.`
+            })
+        });
+
+        const responseData = await response.json();
+
+        console.log(responseData); 
+        res.redirect('/cms/verification')
+
+    } catch (error) {
+        console.error('Error sending SMS:', error);
+    }
+  }
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred.");
   }
 });
+
 
 // Frogot password Post
 
@@ -428,7 +496,7 @@ router.post("/:complaintid/addcomment", async (req, res) => {
     userid: req.cookies.userID,
   });
   await comm.save();
-  res.redirect(`/details/${complaintId}`);
+  res.redirect(`/cms/details/${complaintId}`);
 });
 
 router.post(
@@ -445,7 +513,7 @@ router.post(
       },
     });
     await comm.save();
-    res.redirect(`/details/${complaintid}`);
+    res.redirect(`/cms/details/${complaintid}`);
   }
 );
 

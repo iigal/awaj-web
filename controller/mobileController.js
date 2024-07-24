@@ -3,7 +3,8 @@ const Complaints = require("../models/complaint");
 const user = require("../models/user");
 const comment = require("../models/comment");
 const type = require("../models/type");
-
+const Otp = require("../models/otpModel");
+const otpGenerator = require("otp-generator");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -79,10 +80,93 @@ exports.saveComplaint = async (req, res) => {
 };
 
 exports.signup = (req, res, next) => {
-  user.findOne({ email: req.body.email }).then((_user) => {
+  console.log("Signup req", req.body);
+  user.findOne({ email: req.body.email }).then(async (_user) => {
     if (_user) {
       res.status(201).send("User already exists.");
     } else {
+      const OTP = otpGenerator.generate(6, {
+        digits: true,
+        lowerCaseAlphabets: false,
+        upperCaseAlphabets: false,
+        specialChars: false,
+      });
+      console.log("Generated OTP", OTP);
+      const otp = new Otp({ number: req.body.phonenumber, otp: OTP });
+      const salt = await bcrypt.genSalt(10);
+      otp.otp = await bcrypt.hash(otp.otp, salt);
+      await otp.save();
+      res.status(200).send("OTP sent")
+
+      const url = "https://sms.aakashsms.com/sms/v3/send/";
+
+
+      try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
+              to: req.body.phonenumber,
+              text: `${OTP} is your OTP Code for Awaj. Thank you.`
+            })
+        });
+
+        const responseData = await response.json();
+
+        console.log(responseData); 
+
+    } catch (error) {
+        console.error('Error sending SMS:', error);
+    }
+
+
+      // bcrypt.hash(req.body.password, 10, function (err, hash) {
+      //   let data = new user({
+      //     fullname: req.body.fullname,
+      //     address: req.body.address,
+      //     phonenumber: req.body.phonenumber,
+      //     email: req.body.email,
+      //     password: hash,
+      //     voterid: req.body.voterid,
+      //     accountstatus: req.body.accountstatus,
+      //   });
+      //   data
+      //     .save()
+      //     .then((data) => {
+      //       res.status(200).send(data);
+      //     })
+      //     .catch((error) => {
+      //       res.status(500).send({
+      //         message: error.message || "Something went wrong",
+      //       });
+      //     });
+      // });
+    }
+  });
+};
+
+exports.verifyOtp = async (req, res) => {
+  const otpHolder = await Otp.find({
+    number: req.body.phonenumber,
+  });
+
+  if (otpHolder.length === 0) return res.status(400).send({
+    status: 400,
+    message:
+      "OTP Expired",
+  });
+  const rightOtpFind = otpHolder[otpHolder.length - 1];
+  const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
+
+  console.log("Valid user test",validUser)
+
+  if (rightOtpFind.number === req.body.phonenumber && validUser) {
+    console.log("Reached in")
+
       bcrypt.hash(req.body.password, 10, function (err, hash) {
         let data = new user({
           fullname: req.body.fullname,
@@ -90,11 +174,13 @@ exports.signup = (req, res, next) => {
           phonenumber: req.body.phonenumber,
           email: req.body.email,
           password: hash,
+          voterid: req.body.voterid,
+          accountstatus: req.body.accountstatus,
         });
         data
           .save()
           .then((data) => {
-            res.status(200).send(data);
+            res.send({status:200, data:data});
           })
           .catch((error) => {
             res.status(500).send({
@@ -102,8 +188,17 @@ exports.signup = (req, res, next) => {
             });
           });
       });
-    }
-  });
+    
+    const OTPDelete = await Otp.deleteMany({
+      number: rightOtpFind.number,
+    });
+    
+  } else {
+    return res.send({
+      status: 401,
+      message:
+        "Invalid OTP",
+    });  }
 };
 
 exports.login = (req, res, next) => {
@@ -117,6 +212,19 @@ exports.login = (req, res, next) => {
           res.send(err);
         }
         if (result) {
+          if (_user.accountstatus === "pending") {
+            return res.send({
+              status: 203,
+              message: "Account not approved yet",
+            });
+          }
+          if (_user.accountstatus === "rejected") {
+            return res.send({
+              status: 204,
+              message:
+                "Your account has been rejected. Please signup again with correct details.",
+            });
+          }
           let token = jwt.sign({ email: _user.email }, JWT_SECRET, {
             expiresIn: 6000,
           });
@@ -127,6 +235,7 @@ exports.login = (req, res, next) => {
             token: token,
             userId: _user._id,
             username: _user.fullname,
+            user: _user,
           });
         } else {
           res.send({ status: 201, message: "Credentials is incorrect" });
@@ -171,7 +280,7 @@ exports.forgotPassword = async (req, res) => {
           id: _user._id,
         };
         const token = jwt.sign(payload, secret, { expiresIn: "60m" });
-        const link = `https://govtproj-production.up.railway.app/reset-password/${_user.id}/${token}`;
+        const link = `http://awaj.pradip-paudel.com.np/reset-password/${_user.id}/${token}`;
 
         var transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
@@ -362,7 +471,6 @@ function appendChildrenToParent(objects) {
   return _.filter(objects, (obj) => !obj.parentId);
 }
 
-
 exports.getAreas = async (req, res) => {
   try {
     const id = req.params.id;
@@ -377,7 +485,7 @@ exports.getAreas = async (req, res) => {
 };
 
 exports.reportComment = async (req, res) => {
-  const { user, complaint, comment } = req.params
+  const { user, complaint, comment } = req.params;
 
   try {
     var transporter = nodemailer.createTransport({
@@ -408,49 +516,41 @@ exports.reportComment = async (req, res) => {
     });
 
     res.send("Report sent");
-
-
   } catch (err) {
     res.send({ status: 201, message: "Something went wrong" });
     console.log(err);
   }
-
-}
+};
 
 exports.delete_account = (req, res) => {
   const id = req.params.id;
 
-  user.findByIdAndDelete(id)
-    .then(data => {
+  user
+    .findByIdAndDelete(id)
+    .then((data) => {
       if (!data) {
-        res.status(404).send({ message: `Cannot delete with ${id}` })
-      }
-      else {
-        Complaints.deleteMany({userId:id})
-        .then(data => {
-          if (!data) {
-            res.status(404).send({ message: `Cannot delete with ${id}` })
-          }
-          else {
-            res.send({
-              message: "Complaint and user was deleted succesfully"
-            })
-          }
-        })
-        .catch(err => {
-          res.status(500)({
-            message: "Could not delete id" + id
+        res.status(404).send({ message: `Cannot delete with ${id}` });
+      } else {
+        Complaints.deleteMany({ userId: id })
+          .then((data) => {
+            if (!data) {
+              res.status(404).send({ message: `Cannot delete with ${id}` });
+            } else {
+              res.send({
+                message: "Complaint and user was deleted succesfully",
+              });
+            }
+          })
+          .catch((err) => {
+            res.status(500)({
+              message: "Could not delete id" + id,
+            });
           });
-        });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500)({
-        message: "Could not delete id" + id
+        message: "Could not delete id" + id,
       });
     });
-
-    
-  
-
-}
+};

@@ -79,56 +79,47 @@
         <div class="container">
           <div class="form-complaint">
             <div class="row">
-              <div class="col-md-12">
+              <% users.forEach(user=>{ 
+              if(user.accountstatus==="pending"){%>
+              <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="card custom-card">
-                  <div class="card-body">
-                    <form
-                      action="/admin/type"
-                      method="post"
-                      onsubmit="validateForm()"
-                    >
-                      <div class="form-group form-margin">
-                        <label class="input-title"
-                          ><strong data-i18n="areaOfComplaint"
-                            >Area Of Complaint</strong
-                          ></label
-                        >
-                        <select
-                            class="form-select form-margin"
-                            name="area"
-                          >
-                        <% database.forEach(data=>{%>
-                          <option value="<%=data.type%>"><%=data.type%></option>
-                        <%})%>
-                        </select>
-                      </div>
-                        <label class="input-title"
-                          ><strong data-i18n="addComplaintArea"
-                            >Add Complaint Area</strong
-                          ></label
-                        >
-                        <input
-                          type="text"
-                          placeholder="Add Complaint Area"
-                          class="form-control"
-                          name="type"
-                          id="type"
-                          required
-                        />
-
-                      <div class="form-group m-3 text-center">
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          data-i18n="submit"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
+                  <div class="card-body" >
+                    <div style="display: flex; flex-wrap:wrap; gap: 20px;">
+                    <div style="width: 32%;">
+                      <label data-i18n="name">Full Name :</label>
+                      <strong><%=user.fullname %></strong>
+                    </div>
+                    <div style="width: 32%;display: block;">
+                      <label data-i18n="phoneNumber">Phone Number :</label>
+                      <strong><%=user.phonenumber %></strong>
+                    </div>
+                    <div style="width: 32%;">
+                      <label data-i18n="address">Address :</label>
+                      <strong><%=user.address %></strong>
+                    </div>
+                    <div style="width: 32%;">
+                      <label data-i18n="email">Email :</label>
+                      <strong><%=user.email %></strong>
+                    </div>
+                    <div style="width: 32%;">
+                      <label data-i18n="voterid">Voter Id :</label>
+                      <strong><%=user.voterid %></strong>
+                    </div>
+                  </div>
+                  <form method="post" action="/admin/applicationrequest/<%=user.id%>">
+                  <div style="margin: 20px 0px 0px 0px; float: right;">
+                    <button type="submit" class="btn btn-danger" data-i18n="reject" value="rejected" name="submited">
+                      Reject
+                    </button>
+                    <button type="submit"  class="btn btn-primary" data-i18n="approve" value="approved" name="submited">
+                      Approve
+                    </button>
+                  </div>
+                </form>
                   </div>
                 </div>
               </div>
+            <%}})%>
             </div>
           </div>
         </div>
@@ -151,18 +142,6 @@
           navItems.style.display = "block";
           toggleBtn.innerHTML = "&#9776;";
         }
-      }
-
-      function validateForm() {
-        // Get the values of the form fields
-        var type = document.getElementById("type").value;
-        console.log(type)
-        // Validate the email field
-        if (type === "") {
-          alert("Please enter your category.");
-          return false;
-        }
-        return true;
       }
     </script>
     <script
