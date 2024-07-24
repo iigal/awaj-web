@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <title>Compalints</title>
+  </head>
+  <body>
+    <% if(userName){%>
+      <div class="sidenav">
+        <div class="logo">
+          <a href="/"><img src="../../image/aawaj.png" /></a>
+        </div>
+        <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
+        <ul id="navItems">
+          <li>
+            <a href="/cms" data-i18n="dashboard"
+              ><i class="fa-solid fa-house"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="/cms/complaint" data-i18n="complaints"
+              ><i class="fa-solid fa-list-check"></i> Complaints</a
+            >
+          </li>
+          <li>
+            <a href="/cms/logout" data-i18n="logout"
+              ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <%}%>
+
+    <div class="main-content">
+      <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/"
+            ><strong>Awaj</strong> - Transforming Grievances into Action</a
+          >
+
+          <div class="text-align nav-right" id="navbarTogglerDemo02">
+            <div>
+              <span
+                ><a href="/cms/profile/<%=userid %>" class="user-badge"
+                  ><i class="fa-solid fa-user"></i></a
+              ></span>
+              <span class="user-name"><%=userName %></span>
+            </div>
+            <div>
+              <select id="languageSelect" onchange="translatePageContent(this)">
+                <option value="en">EN</option>
+                <option value="ne">NP</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="dashboard">
+        <div class="container">
+          <div class="form-complaint row">
+            <div class="detail-card col-md-9">
+              <div class="card-body">
+                <div class="detail-title">
+                  <strong> <%=payload.title %> </strong>
+                </div>
+                <div class="detail-body">
+                  <div class="flex-it details">
+                    <div class="info">
+                      <div class="date">
+                        <span><i class="fa-solid fa-calendar-days"></i></span>
+                        <%=payload.Date.substr(0,15) %>
+                      </div>
+                      <div class="name">
+                        <span><i class="fa-solid fa-user"></i></span>
+                        <a href="/cms/profile/<%=payload.userId%>">
+                          <%=payload.username %></a
+                        >
+                      </div>
+                      <div class="date">
+                        <span
+                          ><i class="fa-solid fa-spinner"></i></span>
+                        <%=payload.status %>
+                      </div>
+                    </div>
+                    <% if(payload.status=='Queue'){%>
+                    <div
+                      role="progressbar"
+                      aria-valuenow="0"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="--value: 0"
+                    ></div>
+                    <%}%> <% if(payload.status=='Progress'){%>
+                    <div
+                      role="progressbar"
+                      aria-valuenow="<%=payload.statusbar %>"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="--value: <%=payload.statusbar %>"
+                    ></div>
+                    <%}%> <% if(payload.status=='Success'){%>
+                    <div
+                      role="progressbar"
+                      aria-valuenow="100"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="--value: 100"
+                    ></div>
+                    <%}%>
+                  </div>
+                  <p><%=payload.description %></p>
+                  <% if(payload.images){%>
+                  <div class="row">
+                    <% payload.images.forEach(i=>{%>
+                    <div class="col-md-6 mx-auto">
+                      <div class="image">
+                        <img src="<%=i %>" />
+                      </div>
+                    </div>
+
+                    <% }) %>
+                  </div>
+                  <%}else{%> No Image <%}%>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 status-messages">
+              <h3 data-i18n="status">Complaint Status</h3>
+              <div class="timeline">
+                <% if(payload.statusmessege.length!=0){%>
+                <div class="outer">
+                  <% payload.statusmessege.forEach(messege=>{%>
+                    <div class="statuscard">
+                      <h6 class="title"><%=messege%></p></h6>
+                    </div>
+                  <%}) %>
+                </div>
+              <%}else{%>
+                <div class="outer">No Status Yet</div>
+              <%}%>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                
+                <div class="comment-thread mt-4">
+                  <h3>Comment</h3>
+                  <% if((payload.userId==userid)||isAdmin){%>
+                    <form action="/cms/<%=payload._id %>/addcomment" method="post">
+                      <textarea name="comment" class="form-control" required></textarea>
+                      <button type="submit"class="mt-3 btn btn-primary"> Submit</button>
+                    </form>
+                  <%} %>
+                  
+                  <!-- Comment 1 start -->
+                  <% allComment.forEach(comment =>{%>
+                    <details open class="comment gapping" id="comment-1">
+                      <a href="#comment-1" class="comment-border-link">
+                        <span class="sr-only">Jump to comment-1</span>
+                      </a>
+                      <summary>
+                        <div class="comment-heading">
+                          <div class="comment-info">
+                            <a href="<% if(comment.userid?.fullname){ %>/cms/profile/<%=comment.userid?._id %><%}else{%>#<%}%>" class="comment-author"><% if(comment.userid?.fullname){ %>
+                              <%=comment.userid?.fullname %>
+                            <%}else{%>
+                              Admin
+                            <%}%></a>
+                          </div>
+                        </div>
+                      </summary>
+      
+                      <div class="comment-body">
+                        <p>
+                          <%=comment.message %>
+                        </p>
+                        <% if((payload.userId==userid)||isAdmin){%>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-toggle="reply-form"
+                          data-target="<%=comment._id %>"
+                        >
+                          Reply
+                        </button>
+      
+                        <!-- Reply form start -->
+                        <form
+                          method="POST"
+                          class="reply-form d-none"
+                          id="<%=comment._id %>"
+                          
+                          action="/cms/<%=payload._id %>/<%=comment._id %>/<%=userid  %>/replycomment"
+                        >
+                          <textarea
+                            placeholder="Reply to comment"
+                            rows="4"
+                            class="form-control"
+                            name="reply"
+                            required
+                          ></textarea>
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                          <button
+                            type="button"
+                            data-toggle="reply-form"
+                            data-target="<%=comment._id %>"
+                            class="btn btn-primary"
+                          >
+                            Cancel
+                          </button>
+                        </form>
+                        <%} %>
+                        <!-- Reply form end -->
+                      </div>
+                    <% if(comment.reply){                      
+                      comment.reply.forEach(r=>{%>
+                        <div class="replies">
+                          <!-- Comment 2 start -->
+                          <details open class="comment" id="comment-2">
+                            <a href="#comment-2" class="comment-border-link">
+                              <span class="sr-only">Jump to comment-2</span>
+                            </a>
+                            <summary>
+                              <div class="comment-heading">
+                                <div class="comment-info">
+                                  <a href="/cms/profile/<%= r.userid %>" class="comment-author"><%= r.username %></a>
+                                </div>
+                              </div>
+                            </summary>
+        
+                            <div class="comment-body">
+                              <p><%=r.message %></p>
+        
+                              <!-- Reply form end -->
+                            </div>
+                          </details>
+                        </div>
+
+                        <%})%>
+                      
+                    <%}%>  
+                    </details>
+                  <%})%>
+                  <!-- Comment 1 end -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleNav() {
+        var sidenav = document.querySelector(".sidenav");
+        var mainContent = document.querySelector(".main-content");
+        var navItems = document.getElementById("navItems");
+        var toggleBtn = document.querySelector(".toggle-btn");
+
+        sidenav.classList.toggle("open");
+        mainContent.classList.toggle("open");
+
+        if (sidenav.classList.contains("open")) {
+          navItems.style.display = "none";
+          toggleBtn.innerHTML = "&#9776;";
+        } else {
+          navItems.style.display = "block";
+          toggleBtn.innerHTML = "CMS";
+        }
+      }
+    </script>
+
+    <script>
+      document.addEventListener(
+        "click",
+        function (event) {
+          var target = event.target;
+          var replyForm;
+          if (target.matches("[data-toggle='reply-form']")) {
+            replyForm = document.getElementById(
+              target.getAttribute("data-target")
+            );
+            replyForm.classList.toggle("d-none");
+          }
+        },
+        false
+      );
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../../js/script.js"></script>
+  </body>
+</html>

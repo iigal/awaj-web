@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Muli'>
+    <link rel="stylesheet" href="../../css/style.css">
+
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <div class="mainContainer">
+      
+
+        <div class="">
+            <div class="">
+                <div class="">
+                    <div class="card p-4">
+                      
+                        <form id="submitForm"  method="post" onsubmit="return validateForm()" action="/cms/signup">
+                          <% if(message){ %>
+                            <div class="alert alert-danger" role="alert"><%=message %></div>
+                            <%} %>
+                            <div style="display: flex; justify-content:space-between;">
+                              <div class="form-group required" style="width: 48%;">
+                                <label for="username">Full Name</label>
+                                <input type="text" class="form-control text-lowercase" id="fullname" required=""
+                                    name="fullname" value="">
+                            </div>
+
+                            <div class="form-group required" style="width: 48%;">
+                                <label for="username">Phone Number</label>
+                                <input type="text" class="form-control text-lowercase" id="number" required=""
+                                    name="number" value="">
+                            </div>
+                            </div>
+
+                            <div style="display: flex; justify-content:space-between">
+                              <div class="form-group required" style="width: 48%;">
+                                <label for="username">Address</label>
+                                <input type="text" class="form-control text-lowercase" id="address" required=""
+                                    name="address" value="">
+                            </div>
+
+                            <div class="form-group required" style="width: 48%;">
+                                <label for="username">Email</label>
+                                <input type="text" class="form-control text-lowercase" id="email" required=""
+                                    name="email" value="">
+                            </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                            <div class="form-group required" style="width: 48%;">
+                                <label class="align-items-center">Password
+                                    
+                                <input type="password" class="form-control" required="" id="password" name="password"
+                                    value="">
+                            </div>
+                            <div class="form-group required" style="width: 48%;">
+                                <label class="align-items-center">Confirm Password
+                                    
+                                <input type="password" class="form-control" required="" id="confirm-password" name="confirm-password"
+                                    value="">
+                            </div>
+                          </div>
+                            <div class="form-group required">
+                              <label class="align-items-center">Voter Id
+                                  
+                              <input type="password" class="form-control" required="" id="voter-id" name="voterid"
+                                  value="">
+                          </div>
+                            <div class="form-group pt-1">
+                                <button
+                                class="btn btn-success btn-block"
+                              >
+                                Sign Up
+                              </button>
+                            </div>
+                        </form>
+                        <p class="small-xl pt-3 text-center">
+                          <span class="text-muted">Already a member?</span>
+                          <a href="/cms/login">Sign in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- partial -->
+
+    <script>
+        // Function to validate the form
+        function validateForm() {
+          // Get the values of the form fields
+          var fullName = document.getElementById("fullname").value;
+          var phoneNumber = document.getElementById("number").value;
+          var address = document.getElementById("address").value;
+          var email = document.getElementById("email").value;
+          var password = document.getElementById("password").value;
+          var confirmPassword = document.getElementById("confirm-password").value;
+          var voterid = document.getElementById("voter-id").value;
+
+          // Validate the full name field
+          if (fullName === "") {
+            alert("Please enter your full name.");
+            return false;
+          }
+      
+          // Validate the phone number field
+          if (phoneNumber === "" || phoneNumber.length!==10||!phoneNumber.startsWith("9")) {
+            alert("Please enter valid phone number.");
+            return false;
+          }
+      
+          // Validate the address field
+          if (address === "") {
+            alert("Please enter your address.");
+            return false;
+          }
+      
+          // Validate the email field
+          if (email === "") {
+            alert("Please enter your email.");
+            return false;
+          }
+      
+          // Validate the password field
+          if (password === "") {
+            alert("Please enter your password.");
+            return false;
+          }
+      
+          // Validate the confirm password field
+          if (confirmPassword === "") {
+            alert("Please confirm your password.");
+            return false;
+          }
+      
+          // Validate password and confirm password match
+          if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return false;
+          }
+
+          if(voterid===""){
+            alert("Please enter your voter's id");
+            return false;
+          }
+      
+          // Form is valid, you can proceed with submitting the form
+          return true;
+        }
+      </script>
+      <script>
+      </script>
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../css/style.css" />
+  </head>
+
+  <body>
+    <!-- partial:index.partial.html -->
+
+    <div class="mainContainer">
+      <div class="">
+        <div class="">
+          <div class="">
+            <div class="card p-4">
+              <% if(messege){ %>
+              <div class="alert alert-danger" role="alert">Account <%=messege %></div>
+              <%} %>
+              <form
+                id="submitForm"
+                action="/cms/verification"
+                method="post"
+                onsubmit="return validateForm()"
+              >
+              <div class="form-group required">
+                <label for="username">OTP</label>
+                <input
+                  type="text"
+                  class="form-control text-lowercase"
+                  id="otp"
+                  required=""
+                  name="otp"
+                  value=""
+                />
+              </div>
+              <button class="btn btn-success btn-block">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- partial -->
+    <script>
+      // Function to validate the form
+      function validateForm() {
+        // Get the values of the form fields
+        var otp = document.getElementById("otp").value;
+
+        // Validate the email field
+        if (otp === "") {
+          alert("Please enter your otp.");
+          return false;
+        }
+        // Form is valid, you can proceed with submitting the form
+        return true;
+      }
+    </script>
+    <script>
+    </script>
+  </body>
+</html>
