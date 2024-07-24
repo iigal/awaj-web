@@ -14,7 +14,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
     <title>Homepage</title>
   </head>
   <body>
@@ -26,17 +26,17 @@
       <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
       <ul id="navItems">
         <li>
-          <a href="/" data-i18n="dashboard"
+          <a href="/cms" data-i18n="dashboard"
             ><i class="fa-solid fa-house"></i> Dashboard</a
           >
         </li>
         <li>
-          <a href="/complaint" data-i18n="complaints"
+          <a href="/cms/complaint" data-i18n="complaints"
             ><i class="fa-solid fa-list-check"></i> Complaints</a
           >
         </li>
         <li>
-          <a href="/logout" data-i18n="logout"
+          <a href="/cms/logout" data-i18n="logout"
             ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
           >
         </li>
@@ -55,7 +55,7 @@
           <div class="text-align nav-right" id="navbarTogglerDemo02">
             <div>
               <span
-                ><a href="/profile/<%=userid %>" class="user-badge"
+                ><a href="/cms/profile/<%=userid %>" class="user-badge"
                   ><i class="fa-solid fa-user"></i></a
               ></span>
               <span class="user-name"><%=userName %></span>
@@ -69,13 +69,13 @@
           </div>
 
           <%}else{%>
-          <span><a href="/login %>" class="login_user">Login</a></span>
+          <span><a href="/cms/login %>" class="login_user">Login</a></span>
           <%} %>
         </div>
       </nav>
       <div class="dashboard">
         <div class="container">
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-md-3">
               <div class="card" id="registered">
                 <div class="card-body">
@@ -128,7 +128,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="form-complaint">
             <div class="row">
               <div class="col-md-6">
@@ -140,7 +140,7 @@
                     <div class="form-area">
                       <form
                         method="post"
-                        action="/"
+                        action="/cms"
                         enctype="multipart/form-data"
                         onsubmit="return validateForm()"
                       >
@@ -173,26 +173,6 @@
                             id="description"
                             required
                           ></textarea>
-                        </div>
-                        <div class="form-group form-margin">
-                          <label for="exampleInputPassword1" class="input-title"
-                            ><strong data-i18n="complaintCategory"
-                              >Complaint Category</strong
-                            ></label
-                          >
-                          <select
-                            class="form-select form-margin"
-                            required
-                            name="category"
-                            id="category"
-                          >
-                            <option value="public" selected data-i18n="public">
-                              Public
-                            </option>
-                            <option value="private" data-i18n="private">
-                              Private
-                            </option>
-                          </select>
                         </div>
 
                         <div class="form-group form-margin">
@@ -258,7 +238,7 @@
                         Latest complaints
                       </h4>
                       <a
-                        href="./complaint"
+                        href="/cms/complaint"
                         class="table-complaint-list"
                         data-i18n="viewAll"
                       >
@@ -284,7 +264,7 @@
                             <td><%=i++ %></td>
                             <td>
                               <a
-                                href="/details/<%=complaint._id %>"
+                                href="/cms/details/<%=complaint._id %>"
                                 class="table-complaint-list"
                                 ><%= complaint.title %></a
                               >
@@ -321,7 +301,6 @@
         // Get the values of the form fields
         var title = document.getElementById("title").value;
         var description = document.getElementById("description").value;
-        var category = document.getElementById("category").value;
         var photo = document.getElementById("photo").value;
         var area = document.getElementById("area").value;
 
@@ -332,9 +311,6 @@
           return false;
         } else if (description === "") {
           alert("Please enter a complaint description.");
-          return false;
-        } else if (category === "") {
-          alert("Please select a complaint category.");
           return false;
         } else if (area === "") {
           alert("Please add area of problem.");
@@ -376,7 +352,6 @@
       }
     </script>
     <script>
-      console.log("Made By Swornim Bhattarai and Prajita Balami");
     </script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"

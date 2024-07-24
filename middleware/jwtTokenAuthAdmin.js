@@ -7,6 +7,6 @@ exports.jwtTokenAuthAdmin = (req, res, next) => {
     next();
   } catch (e) {
     res.clearCookie("admin");
-    res.redirect("/login");
+    res.redirect("/cms/login");
   }
 };

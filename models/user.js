@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
+
+const { required } = require("nodemon/lib/config");
+// mongoose.connect(
+//   "mongodb+srv://complaintmgmt1366:GLz2blyKA3RttsWx@cluster0.lcpvryx.mongodb.net/?retryWrites=true&w=majority"
+// );
+
+const type = require("./type");
 mongoose.connect(
   "mongodb+srv://complaintmgmt1366:GLz2blyKA3RttsWx@cluster0.lcpvryx.mongodb.net/?retryWrites=true&w=majority"
 );
+
 
 const userSchema = mongoose.Schema({
   fullname: {
@@ -24,5 +32,13 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  voterid: {
+    type: String,
+    required: true,
+  },
+  accountstatus:{
+    type:String,
+    required: true
+  }
 });
 module.exports = mongoose.model("user", userSchema);

@@ -30,6 +30,11 @@
           >
         </li>
         <li>
+          <a href="/admin/applicationrequest" data-i18n="request"
+            ><i class="fa-solid fa-user-group"></i> Request</a
+          >
+        </li>
+        <li>
           <a href="/admin/complaint" data-i18n="complaints"
             ><i class="fa-solid fa-list-check"></i> Complaints</a
           >
@@ -95,7 +100,6 @@
                             <th style="width: 5%" data-i18n="no">No</th>
                             <th data-i18n="complaintTitle">Complaint Title</th>
                             <th data-i18n="status">Status</th>
-                            <th data-i18n="complaintCategory">Complaint Category</th>
                             <th data-i18n="areaOfComplaint">Area of Complaint</th>
                             <th data-i18n="date">Date</th>
                           </tr>
@@ -120,7 +124,6 @@
                                   == 'Success'){%>Success <%}%></span
                                 >
                               </td>
-                              <td><%= complaint.category %></td>
                               <td><%= complaint.area %></td>
                               <td><%=complaint.Date.substr(0,15) %></td>
                             </tr>
@@ -152,13 +155,14 @@
             <div class="form-group form-margin">
               <label for="exampleInputPassword1" class="input-title"
                 ><strong data-i18n="complaintCategory"
-                  >Complaint Category</strong
+                  >Complaint Status</strong
                 ></label
               >
               <select class="form-select form-margin" name="status" id="status">
                 <option value="" disabled selected data-i18n="public">
                   Select Status
                 </option>
+                <option value="" data-i18n="queue">All</option>
                 <option value="Queue" data-i18n="queue">Queue</option>
                 <option value="Progress" data-i18n="progress">Progress</option>
                 <option value="Complete" data-i18n="complete">Complete</option>
@@ -173,6 +177,7 @@
               >
               <select class="form-select form-margin" name="area" id="area">
                 <option value="" disabled selected>Choose an option</option>
+                <option value="" data-i18n="queue">All</option>
                 <% database.forEach(singleArea=>{ %>
                 <option
                   value="<%=singleArea.type%>"
@@ -224,7 +229,7 @@
           toggleBtn.innerHTML = "&#9776;";
         } else {
           navItems.style.display = "block";
-          toggleBtn.innerHTML = "CMS";
+          toggleBtn.innerHTML = "&#9776;";
         }
       }
     </script>
