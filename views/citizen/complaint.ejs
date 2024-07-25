@@ -14,7 +14,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
     <title>Compalints</title>
   </head>
   <body>
@@ -26,17 +26,17 @@
       <button class="toggle-btn" onclick="toggleNav()">&#9776;</button>
       <ul id="navItems">
         <li>
-          <a href="/" data-i18n="dashboard"
+          <a href="/cms" data-i18n="dashboard"
             ><i class="fa-solid fa-house"></i> Dashboard</a
           >
         </li>
         <li>
-          <a href="/complaint" data-i18n="complaints"
+          <a href="/cms/complaint" data-i18n="complaints"
             ><i class="fa-solid fa-list-check"></i> Complaints</a
           >
         </li>
         <li>
-          <a href="/logout" data-i18n="logout"
+          <a href="/cms/logout" data-i18n="logout"
             ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
           >
         </li>
@@ -44,7 +44,7 @@
     </div>
     <%}%>
     <div class="main-content">
-      <nav class="navbar navbar-expand-lg bg-light swornim prajita">
+      <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="/"
             ><strong>Awaj</strong> - Transforming Grievances into Action</a
@@ -53,7 +53,7 @@
           <div class="text-align nav-right" id="navbarTogglerDemo02">
             <div>
               <span
-                ><a href="/profile/<%=userid %>" class="user-badge"
+                ><a href="/cms/profile/<%=userid %>" class="user-badge"
                   ><i class="fa-solid fa-user"></i></a
               ></span>
               <span class="user-name"><%=userName %></span>
@@ -68,7 +68,7 @@
         </div>
       </nav>
 
-      <div class="dashboard swornim prajita">
+      <div class="dashboard">
         <div class="container">
           <div class="form-complaint">
             <div class="row">
@@ -109,7 +109,7 @@
                               <td><%=i++ %></td>
                               <td>
                                 <a
-                                  href="/details/<%=complaint._id %>"
+                                  href="/cms/details/<%=complaint._id %>"
                                   class="table-complaint-list"
                                   ><%= complaint.title %></a
                                 >
@@ -156,13 +156,14 @@
             <div class="form-group form-margin">
               <label for="exampleInputPassword1" class="input-title"
                 ><strong data-i18n="complaintCategory"
-                  >Complaint Category</strong
+                  >Complaint Status</strong
                 ></label
               >
               <select class="form-select form-margin" name="status" id="status">
                 <option value="" disabled selected data-i18n="public">
                   Select Status
                 </option>
+                <option value="" data-i18n="queue">All</option>
                 <option value="Queue" data-i18n="queue">Queue</option>
                 <option value="Progress" data-i18n="progress">Progress</option>
                 <option value="Complete" data-i18n="complete">Complete</option>
@@ -177,6 +178,7 @@
               >
               <select class="form-select form-margin" name="area" id="area">
                 <option value="" disabled selected>Choose an option</option>
+                <option value="">All</option>
                 <% area.forEach(singleArea=>{ %>
                 <option
                   value="<%=singleArea.type%>"
@@ -209,7 +211,7 @@
         let area = document.getElementById("area").value;
         console.log(status + area);
         let value = await fetch(
-          (window.location.href = `/complaint?status=${status}&area=${area}`)
+          (window.location.href = `/cms/complaint?status=${status}&area=${area}`)
         );
         console.log(value);
       }

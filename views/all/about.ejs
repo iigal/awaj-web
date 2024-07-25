@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <title>Aawaj</title>
+  </head>
+  <body style="text-transform:none;">
+    <nav class="navbar">
+      <div class="navbar-container container">
+        <a href="/" class="portfolio-logo" data-i18n="awaj">Awaj</a>
+        <ul class="menu-items">
+          <li><a href="/aboutus" data-i18n="about">About</a></li>
+          <li><a href="/faq" data-i18n="faq">FAQ</a></li>
+          <li><a href="/howtouse" data-i18n="howTo">How To Use</a></li>
+        </ul>
+        <div>
+          <select id="languageSelect" onchange="translatePageContent(this)">
+            <option value="en">EN</option>
+            <option value="ne">NP</option>
+          </select>
+        </div>
+        <div><a href="/cms/login" class="btn btn-success" style="color: white;" data-i18n="login">Login</a></div>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="web-section">
+        <div class="web-section-title" data-i18n="about">About Us</div>
+        <div class="row">
+          <div class="col-md-6 details" data-i18n="aboutText1">
+            Welcome to our platform dedicated to fostering community engagement and addressing concerns within the Kathmandu-5. 
+             We understand the importance of everyone's voice so we are here to listen and act. Your thoughts are essential in shaping the direction we take. We also believe in the power of open communication and working together to solve problems. So, let's embark on a collective journey to build a more resilient and responsive community. 
+          </div>
+          <div class="col-md-6 detail-image">
+            <img
+            src="../image/aawaj.png"
+            />
+          </div>
+          <div class="col-md-12 details mt-4" data-i18n="aboutText2">
+           Committed to transparency and responsiveness, especially during elections, we have established this platform for collecting and resolving the issues of our constituency. 
+We encourage you to share your ideas, register your complaints, and unite with us to create a stronger Kathmandu 5. We ensure you can register your complaints at any time. Together, we can build a more responsive community that believes in peaceful dialogue and collaboration. 
+Thank you.
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container row">
+        <div class="footer-col">
+          <h4 data-i18n="company">company</h4>
+          <ul>
+            <li><a href="/aboutus" data-i18n="about">About Us</a></li>
+            <li><a href="/cms/login" data-i18n="complaints">Complaints</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="getHelp">get help</h4>
+          <ul>
+            <li><a href="/faq" data-i18n="faq">FAQ</a></li>
+            <li><a href="/howtouse" data-i18n="howTo">How To Use</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="followUs">follow us</h4>
+          <div class="social-links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="others">Others</h4>
+          <ul>
+            <li><a href="/privacy" data-i18n="privacyPolicy">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+<script src="../../js/script.js"></script>
+
