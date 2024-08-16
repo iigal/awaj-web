@@ -6,7 +6,7 @@ const user = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { jwtTokenAuth } = require("../middleware/jwtTokenAuth");
 const fileUpload = require("express-fileupload");
-const { default: mongoose, get } = require("mongoose");
+const { default: mongoose } = require("../app/db");
 const cloudinary = require("cloudinary").v2;
 const JWT_SECRET = "hgfhd6ej4jhF3";
 const Otp = require("../models/otpModel");
@@ -298,7 +298,7 @@ router.post("/login", async (req, res) => {
     if (loginUser != null) {
       let check = await bcrypt.compare(req.body.password, loginUser.password);
       if (check) {
-        if (loginUser.email === "sachiwalayap@gmail.com") {
+        if (loginUser.email === "atishshakya@gmail.com") {
           let token = jwt.sign({ user: loginUser._id }, "admin", {
             expiresIn: 3600,
           }); // Env variable for key

@@ -1,4 +1,4 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose } = require("../app/db");
 const Complaints = require("../models/complaint");
 const user = require("../models/user");
 const comment = require("../models/comment");
