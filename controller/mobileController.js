@@ -16,9 +16,9 @@ const nodemailer = require("nodemailer");
 const _ = require("lodash");
 
 cloudinary.config({
-  cloud_name: "dgggekbbd",
-  api_key: "143297277947985",
-  api_secret: "4qHP2KnzdsXat3ApEAtdeZYogQM",
+  cloud_name: process.env.CLOUDINARY_MOBILE_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_MOBILE_API_KEY,
+  api_secret: process.env.CLOUDINARY_MOBILE_API_SECRET,
 });
 
 exports.allPublicComplaints = async (req, res) => {
@@ -103,25 +103,25 @@ exports.signup = (req, res, next) => {
 
       try {
         const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
-              to: req.body.phonenumber,
-              text: `${OTP} is your OTP Code for Awaj. Thank you.`
-            })
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
+            to: req.body.phonenumber,
+            text: `${OTP} is your OTP Code for Awaj. Thank you.`
+          })
         });
 
         const responseData = await response.json();
 
-        console.log(responseData); 
+        console.log(responseData);
 
-    } catch (error) {
+      } catch (error) {
         console.error('Error sending SMS:', error);
-    }
+      }
 
 
       // bcrypt.hash(req.body.password, 10, function (err, hash) {
@@ -162,43 +162,44 @@ exports.verifyOtp = async (req, res) => {
   const rightOtpFind = otpHolder[otpHolder.length - 1];
   const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
 
-  console.log("Valid user test",validUser)
+  console.log("Valid user test", validUser)
 
   if (rightOtpFind.number === req.body.phonenumber && validUser) {
     console.log("Reached in")
 
-      bcrypt.hash(req.body.password, 10, function (err, hash) {
-        let data = new user({
-          fullname: req.body.fullname,
-          address: req.body.address,
-          phonenumber: req.body.phonenumber,
-          email: req.body.email,
-          password: hash,
-          voterid: req.body.voterid,
-          accountstatus: req.body.accountstatus,
-        });
-        data
-          .save()
-          .then((data) => {
-            res.send({status:200, data:data});
-          })
-          .catch((error) => {
-            res.status(500).send({
-              message: error.message || "Something went wrong",
-            });
-          });
+    bcrypt.hash(req.body.password, 10, function (err, hash) {
+      let data = new user({
+        fullname: req.body.fullname,
+        address: req.body.address,
+        phonenumber: req.body.phonenumber,
+        email: req.body.email,
+        password: hash,
+        voterid: req.body.voterid,
+        accountstatus: req.body.accountstatus,
       });
-    
+      data
+        .save()
+        .then((data) => {
+          res.send({ status: 200, data: data });
+        })
+        .catch((error) => {
+          res.status(500).send({
+            message: error.message || "Something went wrong",
+          });
+        });
+    });
+
     const OTPDelete = await Otp.deleteMany({
       number: rightOtpFind.number,
     });
-    
+
   } else {
     return res.send({
       status: 401,
       message:
         "Invalid OTP",
-    });  }
+    });
+  }
 };
 
 exports.login = (req, res, next) => {

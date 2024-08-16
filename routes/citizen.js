@@ -22,9 +22,9 @@ router.use(
 );
 
 cloudinary.config({
-  cloud_name: "dibqxmlpc",
-  api_key: "893523661126839",
-  api_secret: "oMkSwedWwZpvq7OOkPQdiKh6tpg",
+  cloud_name: process.env.CLOUDINARY_CITIZEN_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_CITIZEN_API_KEY,
+  api_secret: process.env.CLOUDINARY_CITIZEN_API_SECRET,
   secure: true,
 });
 
