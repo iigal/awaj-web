@@ -1,9 +1,5 @@
-const mongoose = require("mongoose");
-const type = require("./type");
+const mongoose = require("../app/db");
 
-mongoose.connect(
-    "mongodb+srv://sachiwalayap:LSyx84Iv1dHcNBdY@cluster0.vgru4io.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  );
 const otpSchema = mongoose.Schema({
     number: {
         type: String,

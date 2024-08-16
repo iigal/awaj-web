@@ -3,12 +3,17 @@ const session = require('express-session');
 const app = express();
 var path = require("path");
 var cookieParser = require("cookie-parser");
-
+const dotEnv = require("dotenv");
 var cors = require("cors");
+
+dotEnv.configDotenv({
+  path: ".env", encoding: "utf-8"
+})
+
 app.use(cors());
 
 app.use(session({
-  secret: 'secret-key',
+  secret: process.env.APP_SECRET_KEY,
   resave: false,
   saveUninitialized: false,
 }));
