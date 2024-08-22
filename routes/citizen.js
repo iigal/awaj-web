@@ -298,7 +298,7 @@ router.post("/login", async (req, res) => {
     if (loginUser != null) {
       let check = await bcrypt.compare(req.body.password, loginUser.password);
       if (check) {
-        if (loginUser.email === "sachiwalayap@gmail.com") {
+        if (loginUser.isAdmin === "yes") {
           let token = jwt.sign({ user: loginUser._id }, "admin", {
             expiresIn: 3600,
           }); // Env variable for key
