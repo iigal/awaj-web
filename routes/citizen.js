@@ -298,6 +298,18 @@ router.post("/login", async (req, res) => {
     if (loginUser != null) {
       let check = await bcrypt.compare(req.body.password, loginUser.password);
       if (check) {
+        if (loginUser.isAdmin === "1") {
+          let token = jwt.sign({ user: loginUser._id }, "admin", {
+            expiresIn: 3600,
+          }); // Env variable for key
+          res.cookie("admin", token, {
+            httpOnly: true,
+          });
+          res.cookie("adminID", loginUser._id, {
+            httpOnly: true,
+          });
+          res.redirect("/admin/dashboard");
+        } else {
         if (loginUser.accountstatus === "approved") {
         let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
           expiresIn: 36000,
