@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema({
   },
   accountstatus:{
     type:String,
-    required: true
+    required: true,
   }
   isAdmin:{
     type:String,
