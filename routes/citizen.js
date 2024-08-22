@@ -6,7 +6,7 @@ const user = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { jwtTokenAuth } = require("../middleware/jwtTokenAuth");
 const fileUpload = require("express-fileupload");
-const { default: mongoose, get } = require("mongoose");
+const { default: mongoose } = require("../app/db");
 const cloudinary = require("cloudinary").v2;
 const JWT_SECRET = "hgfhd6ej4jhF3";
 const Otp = require("../models/otpModel");
@@ -22,9 +22,9 @@ router.use(
 );
 
 cloudinary.config({
-  cloud_name: "dibqxmlpc",
-  api_key: "893523661126839",
-  api_secret: "oMkSwedWwZpvq7OOkPQdiKh6tpg",
+  cloud_name: process.env.CLOUDINARY_CITIZEN_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_CITIZEN_API_KEY,
+  api_secret: process.env.CLOUDINARY_CITIZEN_API_SECRET,
   secure: true,
 });
 
@@ -50,7 +50,7 @@ router.get("/complaint", jwtTokenAuth, async (req, res) => {
       _id: -1,
     });
   } else if (status && area == "") {
-    var all = await Complaint.find({  userId: req.cookies.userID , status: status }).sort(
+    var all = await Complaint.find({ userId: req.cookies.userID, status: status }).sort(
       {
         _id: -1,
       }
@@ -250,45 +250,45 @@ router.post("/", jwtTokenAuth, async (req, res) => {
   }
 });
 
-router.post("/verification", async(req, res)=>{
+router.post("/verification", async (req, res) => {
   const otpHolder = await Otp.find({
     number: req.session.signupForm.number,
   });
 
 
-  if (otpHolder.length === 0){
-    res.render("citizen/signup",{message:"OTP Expired"})
-    }else{
-      const rightOtpFind = otpHolder[otpHolder.length - 1];
-  const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
-
-  console.log("Valid user test",validUser)
-
-  if (rightOtpFind.number === req.session.signupForm.number && validUser) {
-    console.log("Reached in")
-    console.log(req.session.signupForm.password)
-    bcrypt.hash(req.session.signupForm.password, 10, function (err, hash) {
-      let data = new user({
-        fullname:req.session.signupForm.fullname,
-        address:req.session.signupForm.address,
-        phonenumber: req.session.signupForm.number,
-        email:req.session.signupForm.email,
-        password: hash,
-        voterid:req.session.signupForm.voterid,
-        accountstatus:"pending"
-      });
-      data.save();
-    });
-    res.redirect("/cms/login");
-    
-    const OTPDelete = await Otp.deleteMany({
-      number: rightOtpFind.number,
-    });
-    
+  if (otpHolder.length === 0) {
+    res.render("citizen/signup", { message: "OTP Expired" })
   } else {
-    res.render("citizen/signup",{message:"Invalid OTP"});  
-  }
+    const rightOtpFind = otpHolder[otpHolder.length - 1];
+    const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
+
+    console.log("Valid user test", validUser)
+
+    if (rightOtpFind.number === req.session.signupForm.number && validUser) {
+      console.log("Reached in")
+      console.log(req.session.signupForm.password)
+      bcrypt.hash(req.session.signupForm.password, 10, function (err, hash) {
+        let data = new user({
+          fullname: req.session.signupForm.fullname,
+          address: req.session.signupForm.address,
+          phonenumber: req.session.signupForm.number,
+          email: req.session.signupForm.email,
+          password: hash,
+          voterid: req.session.signupForm.voterid,
+          accountstatus: "pending"
+        });
+        data.save();
+      });
+      res.redirect("/cms/login");
+
+      const OTPDelete = await Otp.deleteMany({
+        number: rightOtpFind.number,
+      });
+
+    } else {
+      res.render("citizen/signup", { message: "Invalid OTP" });
     }
+  }
 })
 
 // Login Post
@@ -298,7 +298,7 @@ router.post("/login", async (req, res) => {
     if (loginUser != null) {
       let check = await bcrypt.compare(req.body.password, loginUser.password);
       if (check) {
-        if (loginUser.email === "sachiwalayap@gmail.com") {
+        if (loginUser.email === "atishshakya@gmail.com") {
           let token = jwt.sign({ user: loginUser._id }, "admin", {
             expiresIn: 3600,
           }); // Env variable for key
@@ -310,7 +310,7 @@ router.post("/login", async (req, res) => {
           });
           res.redirect("/admin/dashboard");
         } else {
-          if(loginUser.accountstatus==="approved"){
+          if (loginUser.accountstatus === "approved") {
             let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
               expiresIn: 36000,
             }); // Env variable for key
@@ -324,8 +324,8 @@ router.post("/login", async (req, res) => {
               httpOnly: true,
             });
             res.redirect("/cms");
-          }else{
-            res.render("citizen/login", { messege:loginUser.accountstatus=="pending"?"Account is pending":"Account is rejected" });
+          } else {
+            res.render("citizen/login", { messege: loginUser.accountstatus == "pending" ? "Account is pending" : "Account is rejected" });
           }
         }
       } else {
@@ -359,7 +359,7 @@ router.post("/signup", async (req, res) => {
     const existingUser = await user.findOne({ email });
     if (existingUser) {
       return res.render("citizen/signup", { message: "User already exists." });
-    }else{
+    } else {
       const OTP = otpGenerator.generate(6, {
         digits: true,
         lowerCaseAlphabets: false,
@@ -374,8 +374,9 @@ router.post("/signup", async (req, res) => {
 
       req.session.signupForm = req.body;
       try {
-        const url = "https://sms.aakashsms.com/sms/v3/send/";
-        const response = await fetch(url, {
+        if (process.env.APP_ENVIRONMENT === 'production') {
+          const url = "https://sms.aakashsms.com/sms/v3/send/";
+          const response = await fetch(url, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -386,17 +387,18 @@ router.post("/signup", async (req, res) => {
               to: req.body.number,
               text: `${OTP} is your OTP Code for Awaj. Thank you.`
             })
-        });
+          });
 
-        const responseData = await response.json();
+          const responseData = await response.json();
 
-        console.log(responseData); 
+          console.log(responseData);
+        }
         res.redirect('/cms/verification')
 
-    } catch (error) {
+      } catch (error) {
         console.error('Error sending SMS:', error);
+      }
     }
-  }
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred.");
