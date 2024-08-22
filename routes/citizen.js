@@ -298,36 +298,23 @@ router.post("/login", async (req, res) => {
     if (loginUser != null) {
       let check = await bcrypt.compare(req.body.password, loginUser.password);
       if (check) {
-        if (loginUser.email === "atishshakya@gmail.com") {
-          let token = jwt.sign({ user: loginUser._id }, "admin", {
-            expiresIn: 3600,
-          }); // Env variable for key
-          res.cookie("admin", token, {
-            httpOnly: true,
-          });
-          res.cookie("adminID", loginUser._id, {
-            httpOnly: true,
-          });
-          res.redirect("/admin/dashboard");
-        } else {
-          if (loginUser.accountstatus === "approved") {
-            let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
-              expiresIn: 36000,
-            }); // Env variable for key
-            res.cookie("token", token, {
-              httpOnly: true,
-            });
-            res.cookie("user", loginUser.fullname, {
-              httpOnly: true,
-            });
-            res.cookie("userID", loginUser._id, {
-              httpOnly: true,
-            });
-            res.redirect("/cms");
-          } else {
-            res.render("citizen/login", { messege: loginUser.accountstatus == "pending" ? "Account is pending" : "Account is rejected" });
-          }
-        }
+        if (loginUser.accountstatus === "approved") {
+        let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
+          expiresIn: 36000,
+        }); // Env variable for key
+        res.cookie("token", token, {
+          httpOnly: true,
+        });
+        res.cookie("user", loginUser.fullname, {
+          httpOnly: true,
+        });
+        res.cookie("userID", loginUser._id, {
+          httpOnly: true,
+        });
+        res.redirect("/cms");
+      } else {
+        res.render("citizen/login", { messege: loginUser.accountstatus == "pending" ? "Account is pending" : "Account is rejected" });
+      }        
       } else {
         res.render("citizen/login", { messege: "Invalid Password" });
       }
