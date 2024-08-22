@@ -29,5 +29,9 @@ const userSchema = mongoose.Schema({
     type:String,
     required: true
   }
+  isAdmin:{
+    type:String,
+    required: false
+  }
 });
 module.exports = mongoose.model("user", userSchema);
