@@ -86,22 +86,7 @@
                       action="/admin/type"
                       method="post"
                       onsubmit="validateForm()"
-                    >
-                      <div class="form-group form-margin">
-                        <label class="input-title"
-                          ><strong data-i18n="areaOfComplaint"
-                            >Area Of Complaint</strong
-                          ></label
-                        >
-                        <select
-                            class="form-select form-margin"
-                            name="area"
-                          >
-                        <% database.forEach(data=>{%>
-                          <option value="<%=data.type%>"><%=data.type%></option>
-                        <%})%>
-                        </select>
-                      </div>
+                    >                     
                         <label class="input-title"
                           ><strong data-i18n="addComplaintArea"
                             >Add Complaint Area</strong
@@ -126,6 +111,22 @@
                         </button>
                       </div>
                     </form>
+
+                    <div class="form-group form-margin">
+                        <label class="input-title"
+                          ><strong data-i18n="areaOfComplaint"
+                            >List Area Of Complaint</strong
+                          ></label
+                        >
+                        <select
+                            class="form-select form-margin"
+                            name="area"
+                          >
+                        <% database.forEach(data=>{%>
+                          <option value="<%=data.type%>"><%=data.type%></option>
+                        <%})%>
+                        </select>
+                      </div>
                   </div>
                 </div>
               </div>
