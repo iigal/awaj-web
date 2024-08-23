@@ -420,9 +420,9 @@ router.post("/forget-password", async (req, res) => {
           id: _user._id,
         };
         const token = jwt.sign(payload, secret, { expiresIn: "60m" });
-        const link = `https://awaj.pradip-paudel.com.np/reset-password/${_user.id}/${token}`;
+        const link = `https://awaj.pradip-paudel.com.np/cms/reset-password/${_user.id}/${token}`;
         console.log(
-          `https://awaj.pradip-paudel.com.np/reset-password/${_user.id}/${token}`
+          `https://awaj.pradip-paudel.com.np/cms/reset-password/${_user.id}/${token}`
         );
         var transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
@@ -441,7 +441,7 @@ router.post("/forget-password", async (req, res) => {
           from: "sachiwalayap@gmail.com",
           to: `${email}`,
           subject: "Reset Password",
-          text: `https://awaj.pradip-paudel.com.np/reset-password/${_user.id}/${token}`,
+          text: `https://awaj.pradip-paudel.com.np/cms/reset-password/${_user.id}/${token}`,
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
