@@ -98,7 +98,7 @@ exports.signup = (req, res, next) => {
       await otp.save();
       res.status(200).send("OTP sent")
 
-      const url = "https://sms.aakashsms.com/sms/v3/send/";
+      const url = process.env.SMS_API_URL;
 
 
       try {
@@ -109,7 +109,7 @@ exports.signup = (req, res, next) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
+            auth_token: process.env.SMS_API_TOKEN,
             to: req.body.phonenumber,
             text: `${OTP} is your OTP Code for Awaj. Thank you.`
           })

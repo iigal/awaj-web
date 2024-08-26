@@ -310,8 +310,8 @@ router.post("/login", async (req, res) => {
           });
           res.redirect("/admin/dashboard");
         } else {
-          if(loginUser.accountstatus==="approved"){
-            let token = jwt.sign({ user: loginUser._id }, "shhhhh", {
+          if (loginUser.accountstatus === "approved") {
+            let token = jwt.sign({ user: loginUser._id }, process.env.JWT_SECRET_KEY, {
               expiresIn: 36000,
             }); // Env variable for key
             res.cookie("token", token, {
@@ -324,8 +324,8 @@ router.post("/login", async (req, res) => {
               httpOnly: true,
             });
             res.redirect("/cms");
-          }else{
-            res.render("citizen/login", { messege:loginUser.accountstatus=="pending"?"Account is pending":"Account is rejected" });
+          } else {
+            res.render("citizen/login", { messege: loginUser.accountstatus == "pending" ? "Account is pending" : "Account is rejected" });
           }
         }
       } else {
@@ -375,7 +375,7 @@ router.post("/signup", async (req, res) => {
       req.session.signupForm = req.body;
       try {
         if (process.env.APP_ENVIRONMENT === 'production') {
-          const url = "https://sms.aakashsms.com/sms/v3/send/";
+          const url = process.env.SMS_API_URL;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -383,7 +383,7 @@ router.post("/signup", async (req, res) => {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              auth_token: 'a72c98cefead6de98cac653c080bf919c631cf11090922c135418eac913a5db0',
+              auth_token: process.env.SMS_API_TOKEN,
               to: req.body.number,
               text: `${OTP} is your OTP Code for Awaj. Thank you.`
             })
